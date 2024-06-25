@@ -1,6 +1,17 @@
 spring:
   application:
     name:bookmanage
+  datasource:
+    url: jdbc:postgresql://localhost:5432/book_database
+    username: myuser
+    password: secret
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
 
 flyway:
   enabled: true
