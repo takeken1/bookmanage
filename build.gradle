@@ -13,8 +13,8 @@ plugins {
 	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.24'
 	id 'org.jetbrains.kotlin.jvm' version '1.9.24'
 	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.24'
-	id 'org.jooq.jooq-codegen-gradle' version '3.19.10'
 	id "org.flywaydb.flyway" version "10.15.0"
+	id 'nu.studer.jooq' version '9.0'
 }
 
 group = 'com.example'
@@ -51,9 +51,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.jooq:jooq:3.19.8'
-	implementation 'org.jooq:jooq-meta:3.19.8'
-	implementation 'org.jooq:jooq-codegen:3.19.8'
+	jooqGenerator 'org.postgresql:postgresql:42.5.4'
 }
 
 kotlin {
@@ -66,27 +64,42 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-jooq {
-	configuration {
-		// Configure the database connection here
-		jdbc {
-			driver = "org.postgresql.Driver"
-			url = "jdbc:postgresql://localhost:5432/book_database"
-			user = "myuser"
-			password = "secret"
-		}
-		generator {
-			database {
-				name = "org.jooq.meta.postgres.PostgresDatabase"
-				includes = ".*"
-				inputSchema = "book_database"
-			}
+import org.jooq.meta.jaxb.Logging
 
-			// Generation flags: See advanced configuration properties
-			generate {}
-			target {
-				packageName = "com.example.bookmanage"
-				directory = "build/generated/source/jooq/main"
+jooq {
+	version = '3.19.10'  // default (can be omitted)
+	edition = nu.studer.gradle.jooq.JooqEdition.OSS  // default (can be omitted)
+
+	configurations {
+		main {  // name of the jOOQ configuration
+			generateSchemaSourceOnCompilation = true  // default (can be omitted)
+
+			generationTool {
+				logging = Logging.WARN
+				jdbc {
+					driver = 'org.postgresql.Driver'
+					url = 'jdbc:postgresql://localhost:5432/book_database'
+					user = 'myuser'
+					password = 'secret'
+				}
+				generator {
+					name = 'org.jooq.codegen.DefaultGenerator'
+					database {
+						name = 'org.jooq.meta.postgres.PostgresDatabase'
+						inputSchema = 'public'
+					}
+					generate {
+						deprecated = false
+						records = false
+						immutablePojos = false
+						fluentSetters = false
+					}
+					target {
+						packageName = 'com.example.bookmanage'
+						directory = 'build/generated-src/jooq/main'  // default (can be omitted)
+					}
+					strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+				}
 			}
 		}
 	}
