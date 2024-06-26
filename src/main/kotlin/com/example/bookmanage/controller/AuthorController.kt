@@ -45,7 +45,11 @@ class AuthorController(private val authorService: AuthorService) {
 
     @DeleteMapping("/{id}")
     fun deleteAuthorById(@PathVariable id: Int): ResponseEntity<Any> {
-        authorService.deleteAuthorById(id)
-        return ResponseEntity.noContent().build()
+        try{
+            authorService.deleteAuthorById(id)
+            return ResponseEntity.noContent().build()
+        } catch (e: Exception) {
+            return ResponseEntity.badRequest().build()
+        }
     }
 }
