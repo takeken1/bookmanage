@@ -1,7 +1,7 @@
 package com.example.bookmanage.service
 
 import com.example.bookmanage.Tables.AUTHORS
-import com.example.bookmanage.data.AuthorResponse
+import com.example.bookmanage.data.response.AuthorResponse
 import com.example.bookmanage.repository.AuthorRepository
 import org.jooq.Record
 import org.springframework.stereotype.Service
@@ -11,6 +11,11 @@ import java.util.*
 @Service
 class AuthorService(private val authorRepository: AuthorRepository) {
 
+	/**
+	 * 著者をIDで取得する
+	 * @param id 著者ID
+	 * @return 著者情報
+	 */
     @Transactional(readOnly = true)
     fun getAuthorById(id: Int): Optional<AuthorResponse> {
         val authorRecord = authorRepository.findById(id)
@@ -21,23 +26,42 @@ class AuthorService(private val authorRepository: AuthorRepository) {
         }
     }
 
+	/**
+	 * 著者一覧を取得する
+	 * @return 著者一覧
+	 */
     @Transactional(readOnly = true)
     fun getAllAuthors(): List<AuthorResponse> {
         val records = authorRepository.findAll()
         return createResponseList(records)
     }
 
+	/**
+	 * 著者を作成する
+	 * @param name 著者名
+	 * @return 作成した著者情報
+	 */
     @Transactional
     fun createAuthor(name: String): AuthorResponse {
         val newAuthor = authorRepository.save(name)
         return createResponse(newAuthor)
     }
 
+	/**
+	 * 著者を更新する
+	 * @param id 著者ID
+	 * @param name 著者名
+	 * @return 更新結果
+	 */
     @Transactional
     fun updateAuthor(id: Int, name: String): Int {
         return authorRepository.update(id, name)
     }
 
+	/**
+	 * 著者を削除する
+	 * @param id 著者ID
+	 */
     @Transactional
     fun deleteAuthorById(id: Int) {
         authorRepository.deleteById(id)

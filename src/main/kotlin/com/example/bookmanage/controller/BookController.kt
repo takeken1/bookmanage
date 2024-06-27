@@ -1,7 +1,8 @@
 package com.example.bookmanage.controller
 
-import com.example.bookmanage.data.CreateBookRequest
+import com.example.bookmanage.data.request.CreateBookRequest
 import com.example.bookmanage.service.BookService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,6 +11,11 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/books")
 class BookController(private val bookService: BookService) {
 
+	/**
+	 * 書籍を取得する
+	 * @param id 書籍ID
+	 * @return 書籍情報
+	 */
     @GetMapping("/{id}")
     fun getBookById(@PathVariable id: Int): ResponseEntity<Any> {
         val bookRecord = bookService.getBookById(id)
@@ -20,22 +26,37 @@ class BookController(private val bookService: BookService) {
         }
     }
 
+	/**
+	 * 書籍一覧を取得する
+	 * @return 書籍一覧
+	 */
     @GetMapping
     fun getAllBooks(): ResponseEntity<List<Any>> {
         val books = bookService.getAllBooks()
         return ResponseEntity.ok(books)
     }
 
+	/**
+	 * 書籍を作成する
+	 * @param request 書籍情報
+	 * @return 作成した書籍情報
+	 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBook(@RequestBody book: CreateBookRequest): ResponseEntity<Any> {
-        val newBook = bookService.createBook(book)
+    fun createBook(@RequestBody @Valid request: CreateBookRequest): ResponseEntity<Any> {
+        val newBook = bookService.createBook(request)
         return ResponseEntity.ok(newBook)
     }
 
+	/**
+	 * 書籍を更新する
+	 * @param id 書籍ID
+	 * @param request 更新情報
+	 * @return 更新結果
+	 */
     @PutMapping("/{id}")
-    fun updateBook(@PathVariable id: Int, @RequestBody book: CreateBookRequest): ResponseEntity<Any> {
-        val updatedRows = bookService.updateBook(id, book)
+    fun updateBook(@PathVariable id: Int, @RequestBody @Valid request: CreateBookRequest): ResponseEntity<Any> {
+        val updatedRows = bookService.updateBook(id, request)
         return if (updatedRows > 0) {
             ResponseEntity.ok().build()
         } else {
@@ -43,10 +64,14 @@ class BookController(private val bookService: BookService) {
         }
     }
 
+	/**
+	 * 書籍を削除する
+	 * @param id 書籍ID
+	 * @return 削除結果
+	 */
     @DeleteMapping("/{id}")
     fun deleteBookById(@PathVariable id: Int): ResponseEntity<Any> {
         bookService.deleteBookById(id)
         return ResponseEntity.noContent().build()
     }
-
 }
