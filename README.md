@@ -29,13 +29,6 @@ Do you want java 21.0.3-tem to be set as default? (Y/n): y
 $ java -version
 ```
 
-### ビルド方法
-プロジェクトのルートディレクトリで以下のコマンドを実行してください。
-
-```sh
-./gradlew clean build
-```
-
 ### データベースのセットアップ
 Dockerを使用してPostgreSQLをセットアップします。
 
@@ -48,6 +41,13 @@ Flywayを使用してデータベーススキーマをマイグレーション�
 
 ```sh
 ./gradlew flywayMigrate
+```
+
+### ビルド方法
+プロジェクトのルートディレクトリで以下のコマンドを実行してください。
+
+```sh
+./gradlew clean build
 ```
 
 ### JOOQの使用
