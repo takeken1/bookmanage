@@ -9,7 +9,6 @@ import com.example.bookmanage.repository.BookRepository
 import org.jooq.Record
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class BookService(private val bookRepository: BookRepository) {
@@ -19,12 +18,10 @@ class BookService(private val bookRepository: BookRepository) {
 	 * @return 書籍情報
 	 */
     @Transactional(readOnly = true)
-    fun getBookById(id: Int): Optional<GetBookResponse> {
+    fun getBookById(id: Int): GetBookResponse? {
         val record = bookRepository.findById(id)
-        return if (record.isPresent) {
-            Optional.ofNullable(createGetResponse(record.get()))
-        } else {
-            Optional.empty<GetBookResponse>()
+        return record?.let { bookRecord ->
+            createGetResponse(record)
         }
     }
 

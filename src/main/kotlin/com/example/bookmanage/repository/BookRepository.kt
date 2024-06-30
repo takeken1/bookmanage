@@ -6,7 +6,6 @@ import com.example.bookmanage.data.request.CreateBookRequest
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class BookRepository(private val dsl: DSLContext) {
@@ -15,13 +14,11 @@ class BookRepository(private val dsl: DSLContext) {
 	 * @param id 書籍ID
 	 * @return 書籍情報
 	 */	 
-    fun findById(id: Int): Optional<Record> {
-        return Optional.ofNullable(
-            dsl.select().from(BOOKS)
+    fun findById(id: Int): Record? {
+        return dsl.select().from(BOOKS)
                 .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
                 .where(BOOKS.ID.eq(id))
                 .fetchOne()
-        )
     }
 
 	/**

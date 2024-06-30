@@ -17,12 +17,9 @@ class AuthorService(private val authorRepository: AuthorRepository) {
 	 * @return 著者情報
 	 */
     @Transactional(readOnly = true)
-    fun getAuthorById(id: Int): Optional<AuthorResponse> {
-        val authorRecord = authorRepository.findById(id)
-        return if (authorRecord.isPresent) {
-            Optional.ofNullable(createResponse(authorRecord.get()))
-        } else {
-            Optional.empty<AuthorResponse>()
+    fun getAuthorById(id: Int): AuthorResponse? {
+        return authorRepository.findById(id)?.let { authorRecord ->
+            createResponse(authorRecord)
         }
     }
 

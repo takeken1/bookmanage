@@ -20,12 +20,10 @@ class AuthorRepository(private val dsl: DSLContext) {
 	 * @param id 著者ID
 	 * @return 著者情報
 	 */
-    fun findById(id: Int): Optional<Record> {
-        return Optional.ofNullable(
-            dsl.selectFrom(AUTHORS)
+    fun findById(id: Int): Record? {
+        return dsl.selectFrom(AUTHORS)
                 .where(AUTHORS.ID.eq(id))
                 .fetchOne()
-        )
     }
 
 	/**

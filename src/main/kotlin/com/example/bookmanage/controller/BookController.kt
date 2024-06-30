@@ -18,12 +18,10 @@ class BookController(private val bookService: BookService) {
 	 */
     @GetMapping("/{id}")
     fun getBookById(@PathVariable id: Int): ResponseEntity<Any> {
-        val bookRecord = bookService.getBookById(id)
-        return if (bookRecord.isPresent) {
-            ResponseEntity.ok(bookRecord.get())
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        val book = bookService.getBookById(id)
+        return book?.let { body ->
+            ResponseEntity.ok(body)
+        } ?: ResponseEntity.notFound().build()
     }
 
 	/**

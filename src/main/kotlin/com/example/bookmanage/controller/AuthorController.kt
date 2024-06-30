@@ -18,12 +18,10 @@ class AuthorController(private val authorService: AuthorService) {
 	 */
     @GetMapping("/{id}")
     fun getAuthorById(@PathVariable id: Int): ResponseEntity<Any> {
-        val authorRecord = authorService.getAuthorById(id)
-        return if (authorRecord.isPresent) {
-            ResponseEntity.ok(authorRecord.get())
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        val author = authorService.getAuthorById(id)
+        return author?.let { body ->
+            ResponseEntity.ok(body)
+        } ?: ResponseEntity.notFound().build()
     }
 
 	/**
