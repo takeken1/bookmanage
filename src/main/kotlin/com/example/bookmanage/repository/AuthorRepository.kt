@@ -7,7 +7,6 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class AuthorRepository(private val dsl: DSLContext) {
@@ -63,8 +62,9 @@ class AuthorRepository(private val dsl: DSLContext) {
 	/**
 	 * 著者をIDで削除する
 	 * @param id 著者ID
+     * @return 削除結果
 	 */
-    fun deleteById(id: Int) {
+    fun deleteById(id: Int): Int {
         // 著者に関連する書籍が存在するかチェック
         val bookCount = dsl.selectCount()
             .from(BOOKS)
@@ -77,7 +77,7 @@ class AuthorRepository(private val dsl: DSLContext) {
             throw IllegalStateException("Author cannot be deleted until book is deleted")
         }
 
-        dsl.deleteFrom(AUTHORS)
+        return dsl.deleteFrom(AUTHORS)
             .where(AUTHORS.ID.eq(id))
             .execute()
     }

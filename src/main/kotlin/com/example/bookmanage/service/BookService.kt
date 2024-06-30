@@ -60,10 +60,11 @@ class BookService(private val bookRepository: BookRepository) {
 	/**
 	 * 書籍を削除する
 	 * @param id 書籍ID
+     * @return 削除結果
 	 */
     @Transactional
-    fun deleteBookById(id: Int) {
-        bookRepository.deleteById(id)
+    fun deleteBookById(id: Int): Int {
+        return bookRepository.deleteById(id)
     }
 
     private fun createGetResponseList(records: List<Record>) : List<GetBookResponse> {

@@ -40,10 +40,9 @@ class BookController(private val bookService: BookService) {
 	 * @return 作成した書籍情報
 	 */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     fun createBook(@RequestBody @Valid request: CreateBookRequest): ResponseEntity<Any> {
         val newBook = bookService.createBook(request)
-        return ResponseEntity.ok(newBook)
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBook)
     }
 
 	/**
@@ -69,7 +68,11 @@ class BookController(private val bookService: BookService) {
 	 */
     @DeleteMapping("/{id}")
     fun deleteBookById(@PathVariable id: Int): ResponseEntity<Any> {
-        bookService.deleteBookById(id)
-        return ResponseEntity.noContent().build()
+        try {
+            bookService.deleteBookById(id)
+            return ResponseEntity.noContent().build()
+        } catch (e: Exception) {
+            return ResponseEntity.badRequest().build()
+        }
     }
 }

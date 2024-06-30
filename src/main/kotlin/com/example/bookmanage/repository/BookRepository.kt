@@ -63,9 +63,10 @@ class BookRepository(private val dsl: DSLContext) {
 	/**
 	 * 書籍をIDで削除する
 	 * @param id 書籍ID
+     * @return 削除結果
 	 */
-    fun deleteById(id: Int) {
-        dsl.deleteFrom(BOOKS)
+    fun deleteById(id: Int): Int {
+        return dsl.deleteFrom(BOOKS)
             .where(BOOKS.ID.eq(id))
             .execute()
     }

@@ -6,7 +6,6 @@ import com.example.bookmanage.repository.AuthorRepository
 import org.jooq.Record
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class AuthorService(private val authorRepository: AuthorRepository) {
@@ -58,10 +57,11 @@ class AuthorService(private val authorRepository: AuthorRepository) {
 	/**
 	 * 著者を削除する
 	 * @param id 著者ID
+     * @return 削除結果
 	 */
     @Transactional
-    fun deleteAuthorById(id: Int) {
-        authorRepository.deleteById(id)
+    fun deleteAuthorById(id: Int): Int {
+        return authorRepository.deleteById(id)
     }
 
     private fun createResponseList(records: List<Record>) : List<AuthorResponse> {

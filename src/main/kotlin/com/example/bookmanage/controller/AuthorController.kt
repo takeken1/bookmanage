@@ -40,10 +40,9 @@ class AuthorController(private val authorService: AuthorService) {
 	 * @return 作成した著者情報
 	 */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     fun createAuthor(@RequestBody @Valid request: CreateAuthorRequest): ResponseEntity<Any> {
         val newAuthor = authorService.createAuthor(request.name)
-        return ResponseEntity.ok(newAuthor)
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAuthor)
     }
 
 	/**
