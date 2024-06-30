@@ -9,8 +9,8 @@ import org.hibernate.validator.constraints.Length
  * @param name 著者名
  */
 data class CreateAuthorRequest(
-        @field:Length(max = 100)
-        @field:NotNull
-        @field:NotBlank
-        val name: String
+    @field:Length(max = 100)
+    @field:NotNull
+    @field:NotBlank
+    val name: String
 )

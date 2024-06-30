@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BookService(private val bookRepository: BookRepository) {
-	/**
-	 * 書籍をIDで取得する
-	 * @param id 書籍ID
-	 * @return 書籍情報
-	 */
+    /**
+     * 書籍をIDで取得する
+     * @param id 書籍ID
+     * @return 書籍情報
+     */
     @Transactional(readOnly = true)
     fun getBookById(id: Int): GetBookResponse? {
         val record = bookRepository.findById(id)
@@ -25,76 +25,80 @@ class BookService(private val bookRepository: BookRepository) {
         }
     }
 
-	/**
-	 * 書籍一覧を取得する
-	 * @return 書籍一覧
-	 */
+    /**
+     * 書籍一覧を取得する
+     * @return 書籍一覧
+     */
     @Transactional(readOnly = true)
     fun getAllBooks(): List<GetBookResponse> {
         val records = bookRepository.findAll()
         return createGetResponseList(records)
     }
 
-	/**
-	 * 著者に紐づく書籍一覧を取得する
-	 * @param authorId 著者ID
-	 * @return 書籍一覧
-	 */
-	@Transactional(readOnly = true)
-	fun getBooksByAuthorId(authorId: Int): List<GetBookResponse> {
-		val records = bookRepository.findByAuthorId(authorId)
-		return createGetResponseList(records)
-	}
+    /**
+     * 著者に紐づく書籍一覧を取得する
+     * @param authorId 著者ID
+     * @return 書籍一覧
+     */
+    @Transactional(readOnly = true)
+    fun getBooksByAuthorId(authorId: Int): List<GetBookResponse> {
+        val records = bookRepository.findByAuthorId(authorId)
+        return createGetResponseList(records)
+    }
 
-	/**
-	 * 書籍を作成する
-	 * @param book 書籍情報
-	 * @return 作成した書籍情報
-	 */
+    /**
+     * 書籍を作成する
+     * @param book 書籍情報
+     * @return 作成した書籍情報
+     */
     @Transactional
     fun createBook(book: CreateBookRequest): CreateBookResponse {
         val newBook = bookRepository.save(book)
         return createResponse(newBook)
     }
 
-	/**
-	 * 書籍を更新する
-	 * @param id 書籍ID
-	 * @param book 更新情報
-	 * @return 更新結果
-	 */
+    /**
+     * 書籍を更新する
+     * @param id 書籍ID
+     * @param book 更新情報
+     * @return 更新結果
+     */
     @Transactional
     fun updateBook(id: Int, book: CreateBookRequest): Int {
         return bookRepository.update(id, book)
     }
 
-	/**
-	 * 書籍を削除する
-	 * @param id 書籍ID
+    /**
+     * 書籍を削除する
+     * @param id 書籍ID
      * @return 削除結果
-	 */
+     */
     @Transactional
     fun deleteBookById(id: Int): Int {
         return bookRepository.deleteById(id)
     }
 
-    private fun createGetResponseList(records: List<Record>) : List<GetBookResponse> {
+    private fun createGetResponseList(records: List<Record>): List<GetBookResponse> {
         val books = records.map { record -> createGetResponse(record) }
         return books
     }
 
-    private fun createGetResponse(record: Record) : GetBookResponse {
-        return GetBookResponse(record.getValue(BOOKS.ID),
+    private fun createGetResponse(record: Record): GetBookResponse {
+        return GetBookResponse(
+            record.getValue(BOOKS.ID),
             record.getValue(BOOKS.TITLE),
             record.getValue(BOOKS.ISBN),
             record.getValue(BOOKS.AUTHOR_ID),
-            record.getValue(AUTHORS.NAME))
+            record.getValue(AUTHORS.NAME)
+        )
     }
 
-    private fun createResponse(record: Record) : CreateBookResponse {
-        return CreateBookResponse(record.getValue(BOOKS.ID),
+    private fun createResponse(record: Record): CreateBookResponse {
+        return CreateBookResponse(
+            record.getValue(BOOKS.ID),
             record.getValue(BOOKS.TITLE),
             record.getValue(BOOKS.ISBN),
-            record.getValue(BOOKS.AUTHOR_ID))
+            record.getValue(BOOKS.AUTHOR_ID)
+        )
     }
 }

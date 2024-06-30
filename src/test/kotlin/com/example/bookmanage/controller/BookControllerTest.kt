@@ -10,7 +10,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.springframework.http.HttpStatus
 
-class BookControllerTest: StringSpec({
+class BookControllerTest : StringSpec({
     lateinit var bookController: BookController
     lateinit var bookService: BookService
 
@@ -19,7 +19,7 @@ class BookControllerTest: StringSpec({
         bookController = BookController(bookService)
     }
 
-	"getBookById should return book when valid ID is provided" {
+    "getBookById should return book when valid ID is provided" {
         val body = GetBookResponse(1, "吾輩は猫である", "9784101010137", 1, "夏目漱石")
         every { bookService.getBookById(any()) } returns body
 
@@ -29,15 +29,15 @@ class BookControllerTest: StringSpec({
         response.body shouldBe body
     }
 
-	"getBookById should return 404 when invalid ID is provided" {
-		every { bookService.getBookById(any()) } returns null
+    "getBookById should return 404 when invalid ID is provided" {
+        every { bookService.getBookById(any()) } returns null
 
-		val response = bookController.getBookById(1)
+        val response = bookController.getBookById(1)
 
-		response.statusCode shouldBe HttpStatus.NOT_FOUND
-	}
+        response.statusCode shouldBe HttpStatus.NOT_FOUND
+    }
 
-	"getAllBooks should return all books" {
+    "getAllBooks should return all books" {
         val body = listOf(
             GetBookResponse(1, "吾輩は猫である", "9784101010014", 1, "夏目漱石"),
             GetBookResponse(2, "こころ", "9784101010137", 2, "夏目漱石")
@@ -50,52 +50,52 @@ class BookControllerTest: StringSpec({
         response.body shouldBe body
     }
 
-	"getBooksByAuthorId should return books by author" {
-		val body = listOf(
-			GetBookResponse(1, "吾輩は猫である", "9784101010014", 1, "夏目漱石"),
-			GetBookResponse(2, "こころ", "9784101010137", 1, "夏目漱石")
-		)
-		every { bookService.getBooksByAuthorId(any()) } returns body
+    "getBooksByAuthorId should return books by author" {
+        val body = listOf(
+            GetBookResponse(1, "吾輩は猫である", "9784101010014", 1, "夏目漱石"),
+            GetBookResponse(2, "こころ", "9784101010137", 1, "夏目漱石")
+        )
+        every { bookService.getBooksByAuthorId(any()) } returns body
 
-		val response = bookController.getBooksByAuthorId(1)
+        val response = bookController.getBooksByAuthorId(1)
 
-		response.statusCode shouldBe HttpStatus.OK
-		response.body shouldBe body
-	}
+        response.statusCode shouldBe HttpStatus.OK
+        response.body shouldBe body
+    }
 
-	"createBook should create a new book" {
-		val request = CreateBookRequest("こころ", "9784101010137", 2)
-		val body = CreateBookResponse(1, "こころ", "9784101010137", 2)
-		every { bookService.createBook(any()) } returns body
+    "createBook should create a new book" {
+        val request = CreateBookRequest("こころ", "9784101010137", 2)
+        val body = CreateBookResponse(1, "こころ", "9784101010137", 2)
+        every { bookService.createBook(any()) } returns body
 
-		val response = bookController.createBook(request)
+        val response = bookController.createBook(request)
 
-		response.statusCode shouldBe HttpStatus.CREATED
-		response.body shouldBe body
-	}
+        response.statusCode shouldBe HttpStatus.CREATED
+        response.body shouldBe body
+    }
 
-	"updateBook should update a book" {
-		val request = CreateBookRequest("こころ", "9784101010137", 2)
-		every { bookService.updateBook(any(), any()) } returns 1
+    "updateBook should update a book" {
+        val request = CreateBookRequest("こころ", "9784101010137", 2)
+        every { bookService.updateBook(any(), any()) } returns 1
 
-		val response = bookController.updateBook(1, request)
+        val response = bookController.updateBook(1, request)
 
-		response.statusCode shouldBe HttpStatus.OK
-	}
+        response.statusCode shouldBe HttpStatus.OK
+    }
 
-	"deleteBookById should delete a book" {
-		every { bookService.deleteBookById(any()) } returns 1
+    "deleteBookById should delete a book" {
+        every { bookService.deleteBookById(any()) } returns 1
 
-		val response = bookController.deleteBookById(1)
+        val response = bookController.deleteBookById(1)
 
-		response.statusCode shouldBe HttpStatus.NO_CONTENT
-	}
+        response.statusCode shouldBe HttpStatus.NO_CONTENT
+    }
 
-	"deleteBookById should return 404 when deleting a non-existing book" {
-		every { bookService.deleteBookById(any()) } throws Exception()
+    "deleteBookById should return 404 when deleting a non-existing book" {
+        every { bookService.deleteBookById(any()) } throws Exception()
 
-		val response = bookController.deleteBookById(1)
+        val response = bookController.deleteBookById(1)
 
-		response.statusCode shouldBe HttpStatus.BAD_REQUEST
-	}
+        response.statusCode shouldBe HttpStatus.BAD_REQUEST
+    }
 })
