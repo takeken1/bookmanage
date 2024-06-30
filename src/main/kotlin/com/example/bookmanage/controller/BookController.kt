@@ -35,6 +35,17 @@ class BookController(private val bookService: BookService) {
     }
 
 	/**
+	 * 著者に紐づく書籍一覧を取得する
+	 * @param authorId 著者ID
+	 * @return 書籍一覧
+	 */
+	@GetMapping("/author/{authorId}")
+	fun getBooksByAuthorId(@PathVariable authorId: Int): ResponseEntity<List<Any>> {
+		val books = bookService.getBooksByAuthorId(authorId)
+		return ResponseEntity.ok(books)
+	}
+
+	/**
 	 * 書籍を作成する
 	 * @param request 書籍情報
 	 * @return 作成した書籍情報

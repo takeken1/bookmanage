@@ -50,6 +50,19 @@ class BookControllerTest: StringSpec({
         response.body shouldBe body
     }
 
+	"getBooksByAuthorId should return books by author" {
+		val body = listOf(
+			GetBookResponse(1, "吾輩は猫である", "9784101010014", 1, "夏目漱石"),
+			GetBookResponse(2, "こころ", "9784101010137", 1, "夏目漱石")
+		)
+		every { bookService.getBooksByAuthorId(any()) } returns body
+
+		val response = bookController.getBooksByAuthorId(1)
+
+		response.statusCode shouldBe HttpStatus.OK
+		response.body shouldBe body
+	}
+
 	"createBook should create a new book" {
 		val request = CreateBookRequest("こころ", "9784101010137", 2)
 		val body = CreateBookResponse(1, "こころ", "9784101010137", 2)

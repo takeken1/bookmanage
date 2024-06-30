@@ -36,6 +36,17 @@ class BookService(private val bookRepository: BookRepository) {
     }
 
 	/**
+	 * 著者に紐づく書籍一覧を取得する
+	 * @param authorId 著者ID
+	 * @return 書籍一覧
+	 */
+	@Transactional(readOnly = true)
+	fun getBooksByAuthorId(authorId: Int): List<GetBookResponse> {
+		val records = bookRepository.findByAuthorId(authorId)
+		return createGetResponseList(records)
+	}
+
+	/**
 	 * 書籍を作成する
 	 * @param book 書籍情報
 	 * @return 作成した書籍情報
