@@ -17,9 +17,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      */
     @Transactional(readOnly = true)
     fun getAuthorById(id: Int): AuthorResponse? {
-        return authorRepository.findById(id)?.let { authorRecord ->
-            createResponse(authorRecord)
-        }
+        return authorRepository.findById(id)
     }
 
     /**
@@ -28,8 +26,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      */
     @Transactional(readOnly = true)
     fun getAllAuthors(): List<AuthorResponse> {
-        val records = authorRepository.findAll()
-        return createResponseList(records)
+        return authorRepository.findAll()
     }
 
     /**
@@ -39,8 +36,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      */
     @Transactional
     fun createAuthor(name: String): AuthorResponse {
-        val newAuthor = authorRepository.save(name)
-        return createResponse(newAuthor)
+        return authorRepository.save(name)
     }
 
     /**
@@ -70,13 +66,5 @@ class AuthorService(private val authorRepository: AuthorRepository) {
             throw IllegalArgumentException("The author does not exist")
         }
         authorRepository.deleteById(id)
-    }
-
-    private fun createResponseList(records: List<Record>): List<AuthorResponse> {
-        return records.map { record -> createResponse(record) }
-    }
-
-    private fun createResponse(record: Record): AuthorResponse {
-        return AuthorResponse(record.getValue(AUTHORS.ID), record.getValue(AUTHORS.NAME))
     }
 }

@@ -3,6 +3,8 @@ package com.example.bookmanage.repository
 import com.example.bookmanage.Tables.AUTHORS
 import com.example.bookmanage.Tables.BOOKS
 import com.example.bookmanage.data.request.CreateBookRequest
+import com.example.bookmanage.data.response.CreateBookResponse
+import com.example.bookmanage.data.response.GetBookResponse
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.stereotype.Repository
@@ -14,11 +16,20 @@ class BookRepository(private val dsl: DSLContext) {
      * @param id 書籍ID
      * @return 書籍情報
      */
-    fun findById(id: Int): Record? {
+    fun findById(id: Int): GetBookResponse? {
         return dsl.select().from(BOOKS)
             .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
             .where(BOOKS.ID.eq(id))
             .fetchOne()
+            ?.let {
+                GetBookResponse(
+                    it.getValue(BOOKS.ID),
+                    it.getValue(BOOKS.TITLE),
+                    it.getValue(BOOKS.ISBN),
+                    it.getValue(AUTHORS.ID),
+                    it.getValue(AUTHORS.NAME)
+                )
+            }
     }
 
     /**
@@ -26,12 +37,21 @@ class BookRepository(private val dsl: DSLContext) {
      * @param id 書籍ID
      * @return 書籍情報
      */
-    fun findByIdLock(id: Int): Record? {
+    fun findByIdLock(id: Int): GetBookResponse? {
         return dsl.select().from(BOOKS)
             .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
             .where(BOOKS.ID.eq(id))
             .forUpdate()
             .fetchOne()
+            ?.let {
+                GetBookResponse(
+                    it.getValue(BOOKS.ID),
+                    it.getValue(BOOKS.TITLE),
+                    it.getValue(BOOKS.ISBN),
+                    it.getValue(AUTHORS.ID),
+                    it.getValue(AUTHORS.NAME)
+                )
+            }
     }
 
     /**
@@ -39,21 +59,39 @@ class BookRepository(private val dsl: DSLContext) {
      * @param isbn ISBN
      * @return 書籍情報
      */
-    fun findByIsbn(isbn: String): Record? {
+    fun findByIsbn(isbn: String): GetBookResponse? {
         return dsl.select().from(BOOKS)
             .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
             .where(BOOKS.ISBN.eq(isbn))
             .fetchOne()
+            ?.let {
+                GetBookResponse(
+                    it.getValue(BOOKS.ID),
+                    it.getValue(BOOKS.TITLE),
+                    it.getValue(BOOKS.ISBN),
+                    it.getValue(AUTHORS.ID),
+                    it.getValue(AUTHORS.NAME)
+                )
+            }
     }
 
     /**
      * 書籍一覧を取得する
      * @return 書籍一覧
      */
-    fun findAll(): List<Record> {
+    fun findAll(): List<GetBookResponse> {
         return dsl.select().from(BOOKS)
             .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
             .fetch()
+            .map {
+                GetBookResponse(
+                    it.getValue(BOOKS.ID),
+                    it.getValue(BOOKS.TITLE),
+                    it.getValue(BOOKS.ISBN),
+                    it.getValue(AUTHORS.ID),
+                    it.getValue(AUTHORS.NAME)
+                )
+            }
     }
 
     /**
@@ -61,11 +99,20 @@ class BookRepository(private val dsl: DSLContext) {
      * @param authorId 著者ID
      * @return 書籍一覧
      */
-    fun findByAuthorId(authorId: Int): List<Record> {
+    fun findByAuthorId(authorId: Int): List<GetBookResponse> {
         return dsl.select().from(BOOKS)
             .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
             .where(BOOKS.AUTHOR_ID.eq(authorId))
             .fetch()
+            .map {
+                GetBookResponse(
+                    it.getValue(BOOKS.ID),
+                    it.getValue(BOOKS.TITLE),
+                    it.getValue(BOOKS.ISBN),
+                    it.getValue(AUTHORS.ID),
+                    it.getValue(AUTHORS.NAME)
+                )
+            }
     }
 
     /**
@@ -73,13 +120,21 @@ class BookRepository(private val dsl: DSLContext) {
      * @param book 書籍情報
      * @return 作成した書籍情報
      */
-    fun save(book: CreateBookRequest): Record {
+    fun save(book: CreateBookRequest): CreateBookResponse {
         return dsl.insertInto(BOOKS)
             .set(BOOKS.TITLE, book.title)
             .set(BOOKS.ISBN, book.isbn)
             .set(BOOKS.AUTHOR_ID, book.authorId)
             .returning()
-            .fetchOne() ?: throw IllegalStateException("Failed to insert the book record")
+            .fetchOne()
+            ?.let {
+                CreateBookResponse(
+                    it.getValue(BOOKS.ID),
+                    it.getValue(BOOKS.TITLE),
+                    it.getValue(BOOKS.ISBN),
+                    it.getValue(BOOKS.AUTHOR_ID)
+                )
+            } ?: throw IllegalStateException("Failed to insert the book record")
     }
 
     /**

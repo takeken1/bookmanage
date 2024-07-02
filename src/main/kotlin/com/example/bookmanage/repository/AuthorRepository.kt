@@ -2,6 +2,7 @@ package com.example.bookmanage.repository
 
 import com.example.bookmanage.Tables.AUTHORS
 import com.example.bookmanage.Tables.BOOKS
+import com.example.bookmanage.data.response.AuthorResponse
 import com.example.bookmanage.tables.Authors
 import org.jooq.DSLContext
 import org.jooq.Record
@@ -19,10 +20,11 @@ class AuthorRepository(private val dsl: DSLContext) {
      * @param id 著者ID
      * @return 著者情報
      */
-    fun findById(id: Int): Record? {
+    fun findById(id: Int): AuthorResponse? {
         return dsl.selectFrom(AUTHORS)
             .where(AUTHORS.ID.eq(id))
             .fetchOne()
+            ?.let { AuthorResponse(it.getValue(AUTHORS.ID), it.getValue(AUTHORS.NAME)) }
     }
 
     /**
@@ -30,20 +32,22 @@ class AuthorRepository(private val dsl: DSLContext) {
      * @param id 著者ID
      * @return 著者情報
      */
-    fun findByIdLock(id: Int): Record? {
+    fun findByIdLock(id: Int): AuthorResponse? {
         return dsl.selectFrom(AUTHORS)
             .where(AUTHORS.ID.eq(id))
             .forUpdate()
             .fetchOne()
+            ?.let { AuthorResponse(it.getValue(AUTHORS.ID), it.getValue(AUTHORS.NAME)) }
     }
 
     /**
      * 著者一覧を取得する
      * @return 著者一覧
      */
-    fun findAll(): List<Record> {
+    fun findAll(): List<AuthorResponse> {
         return dsl.selectFrom(AUTHORS)
             .fetch()
+            .map { AuthorResponse(it.getValue(AUTHORS.ID), it.getValue(AUTHORS.NAME)) }
     }
 
     /**
@@ -51,11 +55,13 @@ class AuthorRepository(private val dsl: DSLContext) {
      * @param name 著者名
      * @return 作成した著者情報
      */
-    fun save(name: String): Record {
+    fun save(name: String): AuthorResponse {
         return dsl.insertInto(AUTHORS)
             .set(Authors.AUTHORS.NAME, name)
             .returning()
-            .fetchOne() ?: throw IllegalStateException("Failed to insert the book record")
+            .fetchOne()
+            ?.let { AuthorResponse(it.getValue(AUTHORS.ID), it.getValue(AUTHORS.NAME)) }
+            ?: throw IllegalStateException("Failed to insert the author record")
     }
 
     /**

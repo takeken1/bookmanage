@@ -19,10 +19,7 @@ class BookService(private val bookRepository: BookRepository) {
      */
     @Transactional(readOnly = true)
     fun getBookById(id: Int): GetBookResponse? {
-        val record = bookRepository.findById(id)
-        return record?.let { bookRecord ->
-            createGetResponse(record)
-        }
+        return bookRepository.findById(id)
     }
 
     /**
@@ -31,8 +28,7 @@ class BookService(private val bookRepository: BookRepository) {
      */
     @Transactional(readOnly = true)
     fun getAllBooks(): List<GetBookResponse> {
-        val records = bookRepository.findAll()
-        return createGetResponseList(records)
+        return bookRepository.findAll()
     }
 
     /**
@@ -42,8 +38,7 @@ class BookService(private val bookRepository: BookRepository) {
      */
     @Transactional(readOnly = true)
     fun getBooksByAuthorId(authorId: Int): List<GetBookResponse> {
-        val records = bookRepository.findByAuthorId(authorId)
-        return createGetResponseList(records)
+        return bookRepository.findByAuthorId(authorId)
     }
 
     /**
@@ -57,8 +52,7 @@ class BookService(private val bookRepository: BookRepository) {
         if (bookRepository.findByIsbn(book.isbn) != null) {
             throw IllegalArgumentException("The ISBN already exists")
         }
-        val newBook = bookRepository.save(book)
-        return createResponse(newBook)
+        return bookRepository.save(book)
     }
 
     /**
@@ -92,29 +86,5 @@ class BookService(private val bookRepository: BookRepository) {
             throw IllegalArgumentException("The book does not exist")
         }
         bookRepository.deleteById(id)
-    }
-
-    private fun createGetResponseList(records: List<Record>): List<GetBookResponse> {
-        val books = records.map { record -> createGetResponse(record) }
-        return books
-    }
-
-    private fun createGetResponse(record: Record): GetBookResponse {
-        return GetBookResponse(
-            record.getValue(BOOKS.ID),
-            record.getValue(BOOKS.TITLE),
-            record.getValue(BOOKS.ISBN),
-            record.getValue(BOOKS.AUTHOR_ID),
-            record.getValue(AUTHORS.NAME)
-        )
-    }
-
-    private fun createResponse(record: Record): CreateBookResponse {
-        return CreateBookResponse(
-            record.getValue(BOOKS.ID),
-            record.getValue(BOOKS.TITLE),
-            record.getValue(BOOKS.ISBN),
-            record.getValue(BOOKS.AUTHOR_ID)
-        )
     }
 }
