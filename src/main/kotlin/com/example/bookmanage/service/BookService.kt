@@ -66,7 +66,7 @@ class BookService(private val bookRepository: BookRepository) {
     @Transactional
     fun updateBook(id: Int, book: CreateBookRequest): Int {
         // 更新対象の書籍が存在しない場合は例外をスローする
-        if (bookRepository.findById(id) == null) {
+        if (bookRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The book does not exist")
         }
         return bookRepository.update(id, book)
@@ -80,7 +80,7 @@ class BookService(private val bookRepository: BookRepository) {
     @Transactional
     fun deleteBookById(id: Int): Int {
         // 削除対象の書籍が存在しない場合は例外をスローする
-        if (bookRepository.findById(id) == null) {
+        if (bookRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The book does not exist")
         }
         return bookRepository.deleteById(id)
