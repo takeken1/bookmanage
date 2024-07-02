@@ -1,4 +1,4 @@
-package com.example.bookmanage.controller.advice
+package com.example.bookmanage.handler
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
