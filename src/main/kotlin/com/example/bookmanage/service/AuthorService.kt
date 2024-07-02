@@ -1,9 +1,7 @@
 package com.example.bookmanage.service
 
-import com.example.bookmanage.Tables.AUTHORS
 import com.example.bookmanage.data.response.AuthorResponse
 import com.example.bookmanage.repository.AuthorRepository
-import org.jooq.Record
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -46,7 +44,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      * @return 更新結果
      */
     @Transactional
-    fun updateAuthor(id: Int, name: String): Unit {
+    fun updateAuthor(id: Int, name: String) {
         // 更新対象の著者が存在しない場合は例外をスローする
         if (authorRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The author does not exist")
@@ -60,7 +58,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      * @return 削除結果
      */
     @Transactional
-    fun deleteAuthorById(id: Int): Unit {
+    fun deleteAuthorById(id: Int) {
         // 削除対象の著者が存在しない場合は例外をスローする
         if (authorRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The author does not exist")

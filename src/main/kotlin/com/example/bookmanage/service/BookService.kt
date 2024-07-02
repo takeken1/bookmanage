@@ -1,12 +1,9 @@
 package com.example.bookmanage.service
 
-import com.example.bookmanage.Tables.AUTHORS
-import com.example.bookmanage.Tables.BOOKS
 import com.example.bookmanage.data.request.CreateBookRequest
 import com.example.bookmanage.data.response.CreateBookResponse
 import com.example.bookmanage.data.response.GetBookResponse
 import com.example.bookmanage.repository.BookRepository
-import org.jooq.Record
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -62,7 +59,7 @@ class BookService(private val bookRepository: BookRepository) {
      * @return 更新結果
      */
     @Transactional
-    fun updateBook(id: Int, book: CreateBookRequest): Unit {
+    fun updateBook(id: Int, book: CreateBookRequest) {
         // ISBNが重複している場合は例外をスローする
         if (bookRepository.findByIsbn(book.isbn) != null) {
             throw IllegalArgumentException("The ISBN already exists")
@@ -80,7 +77,7 @@ class BookService(private val bookRepository: BookRepository) {
      * @return 削除結果
      */
     @Transactional
-    fun deleteBookById(id: Int): Unit {
+    fun deleteBookById(id: Int) {
         // 削除対象の書籍が存在しない場合は例外をスローする
         if (bookRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The book does not exist")
