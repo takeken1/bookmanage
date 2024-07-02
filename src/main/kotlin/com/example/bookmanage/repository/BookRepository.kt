@@ -35,6 +35,18 @@ class BookRepository(private val dsl: DSLContext) {
     }
 
     /**
+     * 書籍をISBNで取得する
+     * @param isbn ISBN
+     * @return 書籍情報
+     */
+    fun findByIsbn(isbn: String): Record? {
+        return dsl.select().from(BOOKS)
+            .join(AUTHORS).on(AUTHORS.ID.eq(BOOKS.AUTHOR_ID))
+            .where(BOOKS.ISBN.eq(isbn))
+            .fetchOne()
+    }
+
+    /**
      * 書籍一覧を取得する
      * @return 書籍一覧
      */

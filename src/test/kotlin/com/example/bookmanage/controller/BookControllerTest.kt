@@ -76,34 +76,18 @@ class BookControllerTest : StringSpec({
 
     "updateBook should update a book" {
         val request = CreateBookRequest("こころ", "9784101010137", 2)
-        every { bookService.updateBook(any(), any()) } returns 1
+        every { bookService.updateBook(any(), any()) } returns Unit
 
         val response = bookController.updateBook(1, request)
 
         response.statusCode shouldBe HttpStatus.OK
     }
 
-    "updateBook should return 404 when updating a non-existing book" {
-        every { bookService.updateBook(any(), any()) } returns 0
-
-        val response = bookController.updateBook(1, CreateBookRequest("こころ", "9784101010137", 2))
-
-        response.statusCode shouldBe HttpStatus.NOT_FOUND
-    }
-
     "deleteBookById should delete a book" {
-        every { bookService.deleteBookById(any()) } returns 1
+        every { bookService.deleteBookById(any()) } returns Unit
 
         val response = bookController.deleteBookById(1)
 
         response.statusCode shouldBe HttpStatus.NO_CONTENT
-    }
-
-    "deleteBookById should return 404 when deleting a non-existing book" {
-        every { bookService.deleteBookById(any()) } throws Exception()
-
-        val response = bookController.deleteBookById(1)
-
-        response.statusCode shouldBe HttpStatus.BAD_REQUEST
     }
 })

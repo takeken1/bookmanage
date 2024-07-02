@@ -64,16 +64,8 @@ class BookController(private val bookService: BookService) {
      */
     @PutMapping("/{id}")
     fun updateBook(@PathVariable id: Int, @RequestBody @Valid request: CreateBookRequest): ResponseEntity<Any> {
-        try {
-            val updatedRows = bookService.updateBook(id, request)
-            return if (updatedRows > 0) {
-                ResponseEntity.ok().build()
-            } else {
-                ResponseEntity.notFound().build()
-            }
-        } catch (e: Exception) {
-            return ResponseEntity.notFound().build()
-        }
+        bookService.updateBook(id, request)
+        return ResponseEntity.ok().build()
     }
 
     /**
@@ -83,11 +75,7 @@ class BookController(private val bookService: BookService) {
      */
     @DeleteMapping("/{id}")
     fun deleteBookById(@PathVariable id: Int): ResponseEntity<Any> {
-        try {
-            bookService.deleteBookById(id)
-            return ResponseEntity.noContent().build()
-        } catch (e: Exception) {
-            return ResponseEntity.badRequest().build()
-        }
+        bookService.deleteBookById(id)
+        return ResponseEntity.noContent().build()
     }
 }

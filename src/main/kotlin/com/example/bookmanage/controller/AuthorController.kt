@@ -53,16 +53,8 @@ class AuthorController(private val authorService: AuthorService) {
      */
     @PutMapping("/{id}")
     fun updateAuthor(@PathVariable id: Int, @RequestBody @Valid request: CreateAuthorRequest): ResponseEntity<Any> {
-        try {
-            val updatedRows = authorService.updateAuthor(id, request.name)
-            return if (updatedRows > 0) {
-                ResponseEntity.ok().build()
-            } else {
-                ResponseEntity.notFound().build()
-            }
-        } catch (e: Exception) {
-            return ResponseEntity.notFound().build()
-        }
+        authorService.updateAuthor(id, request.name)
+        return ResponseEntity.ok().build()
     }
 
     /**
@@ -72,11 +64,7 @@ class AuthorController(private val authorService: AuthorService) {
      */
     @DeleteMapping("/{id}")
     fun deleteAuthorById(@PathVariable id: Int): ResponseEntity<Any> {
-        try {
-            authorService.deleteAuthorById(id)
-            return ResponseEntity.noContent().build()
-        } catch (e: Exception) {
-            return ResponseEntity.badRequest().build()
-        }
+        authorService.deleteAuthorById(id)
+        return ResponseEntity.noContent().build()
     }
 }

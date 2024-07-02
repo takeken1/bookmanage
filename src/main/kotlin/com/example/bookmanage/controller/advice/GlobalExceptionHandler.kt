@@ -20,4 +20,11 @@ class GlobalExceptionHandler {
         // HTTPステータス400(Bad Request)とともにエラーメッセージを返す
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors)
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(e: IllegalArgumentException)
+            : ResponseEntity<String> {
+        // HTTPステータス400(Bad Request)とともにエラーメッセージを返す
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+    }
 }

@@ -62,34 +62,18 @@ class AuthorControllerTest : StringSpec({
 
     "updateAuthor should update an existing author" {
         val request = CreateAuthorRequest("芥川龍之介")
-        every { authorService.updateAuthor(any(), any()) } returns 1
+        every { authorService.updateAuthor(any(), any()) } returns Unit
 
         val response = authorController.updateAuthor(1, request)
 
         response.statusCode shouldBe HttpStatus.OK
     }
 
-    "updateAuthor should return 404 when updating a non-existing author" {
-        every { authorService.updateAuthor(any(), any()) } returns 0
-
-        val response = authorController.updateAuthor(1, CreateAuthorRequest("芥川龍之介"))
-
-        response.statusCode shouldBe HttpStatus.NOT_FOUND
-    }
-
     "deleteAuthorById should delete an existing author" {
-        every { authorService.deleteAuthorById(any()) } returns 1
+        every { authorService.deleteAuthorById(any()) } returns Unit
 
         val result = authorController.deleteAuthorById(1)
 
         result.statusCode shouldBe HttpStatus.NO_CONTENT
-    }
-
-    "deleteAuthorById should return 400 when deleting a non-existing author" {
-        every { authorService.deleteAuthorById(any()) } throws Exception()
-
-        val result = authorController.deleteAuthorById(1)
-
-        result.statusCode shouldBe HttpStatus.BAD_REQUEST
     }
 })

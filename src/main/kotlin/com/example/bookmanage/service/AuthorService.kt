@@ -50,12 +50,12 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      * @return 更新結果
      */
     @Transactional
-    fun updateAuthor(id: Int, name: String): Int {
+    fun updateAuthor(id: Int, name: String): Unit {
         // 更新対象の著者が存在しない場合は例外をスローする
         if (authorRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The author does not exist")
         }
-        return authorRepository.update(id, name)
+        authorRepository.update(id, name)
     }
 
     /**
@@ -64,12 +64,12 @@ class AuthorService(private val authorRepository: AuthorRepository) {
      * @return 削除結果
      */
     @Transactional
-    fun deleteAuthorById(id: Int): Int {
+    fun deleteAuthorById(id: Int): Unit {
         // 削除対象の著者が存在しない場合は例外をスローする
         if (authorRepository.findByIdLock(id) == null) {
             throw IllegalArgumentException("The author does not exist")
         }
-        return authorRepository.deleteById(id)
+        authorRepository.deleteById(id)
     }
 
     private fun createResponseList(records: List<Record>): List<AuthorResponse> {
