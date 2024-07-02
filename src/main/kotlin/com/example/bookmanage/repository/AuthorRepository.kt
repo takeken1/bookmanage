@@ -26,6 +26,18 @@ class AuthorRepository(private val dsl: DSLContext) {
     }
 
     /**
+     * 著者をIDで取得する(ロック付き)
+     * @param id 著者ID
+     * @return 著者情報
+     */
+    fun findByIdLock(id: Int): Record? {
+        return dsl.selectFrom(AUTHORS)
+            .where(AUTHORS.ID.eq(id))
+            .forUpdate()
+            .fetchOne()
+    }
+
+    /**
      * 著者一覧を取得する
      * @return 著者一覧
      */

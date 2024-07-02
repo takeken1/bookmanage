@@ -83,6 +83,14 @@ class BookControllerTest : StringSpec({
         response.statusCode shouldBe HttpStatus.OK
     }
 
+    "updateBook should return 404 when updating a non-existing book" {
+        every { bookService.updateBook(any(), any()) } returns 0
+
+        val response = bookController.updateBook(1, CreateBookRequest("こころ", "9784101010137", 2))
+
+        response.statusCode shouldBe HttpStatus.NOT_FOUND
+    }
+
     "deleteBookById should delete a book" {
         every { bookService.deleteBookById(any()) } returns 1
 

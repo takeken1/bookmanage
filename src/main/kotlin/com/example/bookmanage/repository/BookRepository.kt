@@ -22,6 +22,18 @@ class BookRepository(private val dsl: DSLContext) {
     }
 
     /**
+     * 著者をIDで取得する(ロック付き)
+     * @param id 著者ID
+     * @return 著者情報
+     */
+    fun findAuthorById(id: Int): Record? {
+        return dsl.select().from(AUTHORS)
+            .where(AUTHORS.ID.eq(id))
+            .forUpdate()
+            .fetchOne()
+    }
+
+    /**
      * 書籍一覧を取得する
      * @return 書籍一覧
      */

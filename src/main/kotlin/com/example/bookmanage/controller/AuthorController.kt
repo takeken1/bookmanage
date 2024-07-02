@@ -53,11 +53,15 @@ class AuthorController(private val authorService: AuthorService) {
      */
     @PutMapping("/{id}")
     fun updateAuthor(@PathVariable id: Int, @RequestBody @Valid request: CreateAuthorRequest): ResponseEntity<Any> {
-        val updatedRows = authorService.updateAuthor(id, request.name)
-        return if (updatedRows > 0) {
-            ResponseEntity.ok().build()
-        } else {
-            ResponseEntity.notFound().build()
+        try {
+            val updatedRows = authorService.updateAuthor(id, request.name)
+            return if (updatedRows > 0) {
+                ResponseEntity.ok().build()
+            } else {
+                ResponseEntity.notFound().build()
+            }
+        } catch (e: Exception) {
+            return ResponseEntity.notFound().build()
         }
     }
 

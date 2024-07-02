@@ -64,11 +64,15 @@ class BookController(private val bookService: BookService) {
      */
     @PutMapping("/{id}")
     fun updateBook(@PathVariable id: Int, @RequestBody @Valid request: CreateBookRequest): ResponseEntity<Any> {
-        val updatedRows = bookService.updateBook(id, request)
-        return if (updatedRows > 0) {
-            ResponseEntity.ok().build()
-        } else {
-            ResponseEntity.notFound().build()
+        try {
+            val updatedRows = bookService.updateBook(id, request)
+            return if (updatedRows > 0) {
+                ResponseEntity.ok().build()
+            } else {
+                ResponseEntity.notFound().build()
+            }
+        } catch (e: Exception) {
+            return ResponseEntity.notFound().build()
         }
     }
 
