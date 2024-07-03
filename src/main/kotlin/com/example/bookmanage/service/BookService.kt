@@ -46,7 +46,7 @@ class BookService(private val bookRepository: BookRepository) {
     @Transactional
     fun createBook(book: CreateBookRequest): CreateBookResponse {
         // ISBNが重複している場合は例外をスローする
-        if (bookRepository.findByIsbn(book.isbn) != null) {
+        bookRepository.findByIsbn(book.isbn)?.let {
             throw IllegalArgumentException("The ISBN already exists")
         }
         return bookRepository.save(book)
@@ -61,13 +61,12 @@ class BookService(private val bookRepository: BookRepository) {
     @Transactional
     fun updateBook(id: Int, book: CreateBookRequest) {
         // ISBNが重複している場合は例外をスローする
-        if (bookRepository.findByIsbn(book.isbn) != null) {
+        bookRepository.findByIsbn(book.isbn)?.let {
             throw IllegalArgumentException("The ISBN already exists")
         }
+
         // 更新対象の書籍が存在しない場合は例外をスローする
-        if (bookRepository.findByIdLock(id) == null) {
-            throw IllegalArgumentException("The book does not exist")
-        }
+        bookRepository.findByIdLock(id) ?: throw IllegalArgumentException("The book does not exist")
         bookRepository.update(id, book)
     }
 
@@ -79,9 +78,7 @@ class BookService(private val bookRepository: BookRepository) {
     @Transactional
     fun deleteBookById(id: Int) {
         // 削除対象の書籍が存在しない場合は例外をスローする
-        if (bookRepository.findByIdLock(id) == null) {
-            throw IllegalArgumentException("The book does not exist")
-        }
+        bookRepository.findByIdLock(id) ?: throw IllegalArgumentException("The book does not exist")
         bookRepository.deleteById(id)
     }
 }

@@ -18,10 +18,7 @@ class BookController(private val bookService: BookService) {
      */
     @GetMapping("/{id}")
     fun getBookById(@PathVariable id: Int): ResponseEntity<Any> {
-        val book = bookService.getBookById(id)
-        return book?.let { body ->
-            ResponseEntity.ok(body)
-        } ?: ResponseEntity.notFound().build()
+        return bookService.getBookById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
     }
 
     /**
@@ -30,8 +27,9 @@ class BookController(private val bookService: BookService) {
      */
     @GetMapping
     fun getAllBooks(): ResponseEntity<List<Any>> {
-        val books = bookService.getAllBooks()
-        return ResponseEntity.ok(books)
+        bookService.getAllBooks().let {
+            return ResponseEntity.ok(it)
+        }
     }
 
     /**
@@ -41,8 +39,9 @@ class BookController(private val bookService: BookService) {
      */
     @GetMapping("/author/{authorId}")
     fun getBooksByAuthorId(@PathVariable authorId: Int): ResponseEntity<List<Any>> {
-        val books = bookService.getBooksByAuthorId(authorId)
-        return ResponseEntity.ok(books)
+        bookService.getBooksByAuthorId(authorId).let {
+            return ResponseEntity.ok(it)
+        }
     }
 
     /**
@@ -52,8 +51,9 @@ class BookController(private val bookService: BookService) {
      */
     @PostMapping
     fun createBook(@RequestBody @Valid request: CreateBookRequest): ResponseEntity<Any> {
-        val newBook = bookService.createBook(request)
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBook)
+        return bookService.createBook(request).let {
+            ResponseEntity.status(HttpStatus.CREATED).body(it)
+        }
     }
 
     /**

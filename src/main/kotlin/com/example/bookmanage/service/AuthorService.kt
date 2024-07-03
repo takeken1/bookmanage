@@ -46,9 +46,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
     @Transactional
     fun updateAuthor(id: Int, name: String) {
         // 更新対象の著者が存在しない場合は例外をスローする
-        if (authorRepository.findByIdLock(id) == null) {
-            throw IllegalArgumentException("The author does not exist")
-        }
+        authorRepository.findByIdLock(id) ?: throw IllegalArgumentException("The author does not exist")
         authorRepository.update(id, name)
     }
 
@@ -60,9 +58,7 @@ class AuthorService(private val authorRepository: AuthorRepository) {
     @Transactional
     fun deleteAuthorById(id: Int) {
         // 削除対象の著者が存在しない場合は例外をスローする
-        if (authorRepository.findByIdLock(id) == null) {
-            throw IllegalArgumentException("The author does not exist")
-        }
+        authorRepository.findByIdLock(id) ?: throw IllegalArgumentException("The author does not exist")
         authorRepository.deleteById(id)
     }
 }

@@ -18,10 +18,7 @@ class AuthorController(private val authorService: AuthorService) {
      */
     @GetMapping("/{id}")
     fun getAuthorById(@PathVariable id: Int): ResponseEntity<Any> {
-        val author = authorService.getAuthorById(id)
-        return author?.let { body ->
-            ResponseEntity.ok(body)
-        } ?: ResponseEntity.notFound().build()
+        return authorService.getAuthorById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
     }
 
     /**
@@ -30,8 +27,7 @@ class AuthorController(private val authorService: AuthorService) {
      */
     @GetMapping
     fun getAllAuthors(): ResponseEntity<List<Any>> {
-        val authors = authorService.getAllAuthors()
-        return ResponseEntity.ok(authors)
+        authorService.getAllAuthors().let { return ResponseEntity.ok(it) }
     }
 
     /**
@@ -41,8 +37,9 @@ class AuthorController(private val authorService: AuthorService) {
      */
     @PostMapping
     fun createAuthor(@RequestBody @Valid request: CreateAuthorRequest): ResponseEntity<Any> {
-        val newAuthor = authorService.createAuthor(request.name)
-        return ResponseEntity.status(HttpStatus.CREATED).body(newAuthor)
+        authorService.createAuthor(request.name).let {
+            return ResponseEntity.status(HttpStatus.CREATED).body(it)
+        }
     }
 
     /**
